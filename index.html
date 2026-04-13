@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chill">
+<meta name="theme-color" content="#1a0533">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Soirée Chill</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0a1e;
+  --bg2: #1a0f35;
+  --surface: #1e1432;
+  --card: #241848;
+  --accent: #e8a87c;
+  --accent2: #f4c5a0;
+  --pink: #e87ca8;
+  --gold: #d4a843;
+  --teal: #7ce8d4;
+  --text: #f0ece8;
+  --muted: #7a6d8a;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --cat-vérité: #7eb8d4;
+  --cat-action: #d4a07e;
+  --cat-choix: #a07ed4;
+  --cat-complète: #7ed4a0;
+  --cat-souvenir: #d4c07e;
+  --cat-imaginaire: #d47eb8;
+  --cat-face: #7ed4d4;
+  --cat-filtre: #d47e7e;
+  --cat-ressenti: #a0b8d4;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overscroll-behavior:none; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== ANIMATED BACKGROUND ===== */
+.bg-canvas {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden;
+}
+
+.bg-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35;
+  animation: orbFloat 12s ease-in-out infinite alternate;
+}
+.bg-orb:nth-child(1) { width:400px; height:400px; background:radial-gradient(circle, #6e3fa8, transparent); top:-100px; left:-100px; animation-delay:0s; }
+.bg-orb:nth-child(2) { width:350px; height:350px; background:radial-gradient(circle, #a83f6e, transparent); bottom:-80px; right:-80px; animation-delay:-4s; }
+.bg-orb:nth-child(3) { width:300px; height:300px; background:radial-gradient(circle, #3f6ea8, transparent); top:40%; left:30%; animation-delay:-8s; }
+.bg-orb:nth-child(4) { width:250px; height:250px; background:radial-gradient(circle, #a8843f, transparent); top:20%; right:10%; animation-delay:-2s; }
+
+@keyframes orbFloat {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(30px,20px) scale(1.1); }
+}
+
+.stars {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 95%, rgba(255,255,255,0.4) 0%, transparent 100%);
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: calc(var(--safe-top) + 20px) 20px calc(var(--safe-bottom) + 20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  overflow-y: auto;
+}
+
+.screen.hidden {
+  opacity: 0; pointer-events: none; transform: translateY(20px);
+}
+
+/* ===== SCREEN 1 — ACCUEIL ===== */
+#screen-home {
+  text-align: center;
+  gap: 0;
+}
+
+.logo-wrap {
+  margin-bottom: 32px;
+  animation: logoIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes logoIn {
+  from { opacity:0; transform: scale(0.7) translateY(-20px); }
+  to { opacity:1; transform: scale(1) translateY(0); }
+}
+
+.logo-icon {
+  width: 110px; height: 110px;
+  margin: 0 auto 16px;
+  position: relative;
+}
+
+.logo-ring {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #e8a87c, #e87ca8, #a87ce8, #7ca8e8, #7ce8d4, #e8a87c);
+  padding: 3px;
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.logo-inner {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem;
+}
+
+.logo-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.logo-title span {
+  background: linear-gradient(135deg, #e8a87c, #e87ca8, #a87ce8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.logo-sub {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  animation: fadeUp 0.8s ease 0.4s both;
+}
+
+.home-desc {
+  font-size: 0.9rem;
+  color: rgba(240,236,232,0.6);
+  line-height: 1.7;
+  max-width: 280px;
+  margin: 0 auto 36px;
+  animation: fadeUp 0.8s ease 0.6s both;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.btn-start {
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 16px 48px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  box-shadow: 0 8px 32px rgba(232,168,124,0.3);
+  transition: all 0.2s;
+  animation: fadeUp 0.8s ease 0.8s both;
+}
+
+.btn-start:active { transform: scale(0.96); }
+
+.home-stats {
+  margin-top: 28px;
+  display: flex; gap: 24px; justify-content: center;
+  animation: fadeUp 0.8s ease 1s both;
+}
+
+.home-stat {
+  text-align: center;
+}
+
+.home-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-stat-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ===== SCREEN 2 — JOUEURS ===== */
+#screen-players {
+  gap: 20px;
+  max-width: 420px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.screen-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  text-align: center;
+  color: var(--text);
+}
+
+.screen-title span {
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+.screen-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: -10px;
+}
+
+.players-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.player-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease both;
+}
+
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(-10px); }
+  to { opacity:1; transform:translateX(0); }
+}
+
+.player-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.player-avatar.homme { background: linear-gradient(135deg, #7ca8e8, #7ce8d4); }
+.player-avatar.femme { background: linear-gradient(135deg, #e87ca8, #e8a87c); }
+.player-avatar.autre { background: linear-gradient(135deg, #a87ce8, #e87ca8); }
+
+.player-name-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.player-name-input::placeholder { color: var(--muted); }
+
+.player-genre-btns {
+  display: flex; gap: 4px;
+}
+
+.genre-btn {
+  padding: 4px 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.genre-btn.active-h { background: rgba(124,168,232,0.2); border-color: #7ca8e8; color: #7ca8e8; }
+.genre-btn.active-f { background: rgba(232,124,168,0.2); border-color: #e87ca8; color: #e87ca8; }
+.genre-btn.active-a { background: rgba(168,124,232,0.2); border-color: #a87ce8; color: #a87ce8; }
+
+.player-remove {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.player-remove:active { color: var(--cat-filtre); }
+
+.btn-add-player {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px dashed rgba(255,255,255,0.15);
+  border-radius: 16px;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+
+.btn-add-player:active { border-color: var(--accent); color: var(--accent); }
+
+.btn-play {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  border: none;
+  border-radius: 16px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  box-shadow: 0 8px 24px rgba(232,124,168,0.3);
+  transition: all 0.2s;
+}
+
+.btn-play:active { transform: scale(0.97); }
+
+.btn-back {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 8px;
+  letter-spacing: 0.05em;
+}
+
+/* ===== SCREEN 3 — JEU ===== */
+#screen-game {
+  justify-content: flex-start;
+  padding-top: calc(var(--safe-top) + 12px);
+  gap: 0;
+}
+
+.game-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+/* TOP BAR */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: 4px;
+}
+
+.top-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.top-actions {
+  display: flex; gap: 8px; align-items: center;
+}
+
+.icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+
+.icon-btn.active { background: rgba(232,168,124,0.15); border-color: rgba(232,168,124,0.3); color: var(--accent); }
+.icon-btn:active { transform: scale(0.92); }
+
+/* PLAYERS BAR */
+.players-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: none;
+}
+
+.players-bar::-webkit-scrollbar { display: none; }
+
+.player-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 99px;
+  padding: 5px 12px 5px 5px;
+  white-space: nowrap;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.player-chip.active-turn {
+  background: rgba(232,168,124,0.15);
+  border-color: rgba(232,168,124,0.35);
+}
+
+.player-chip-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+}
+
+.player-chip-avatar.homme { background: linear-gradient(135deg, #7ca8e8, #7ce8d4); }
+.player-chip-avatar.femme { background: linear-gradient(135deg, #e87ca8, #e8a87c); }
+.player-chip-avatar.autre { background: linear-gradient(135deg, #a87ce8, #e87ca8); }
+
+.player-chip-name {
+  font-size: 0.75rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.player-chip-score {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-left: 2px;
+}
+
+/* MOOD BAR */
+.mood-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.mood-label {
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.mood-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.mood-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #7ca8e8, #e87ca8, #e8a87c);
+  transition: width 0.8s ease;
+  width: 0%;
+}
+
+.mood-emoji {
+  font-size: 0.9rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* CATEGORY TABS */
+.cat-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.cat-tab {
+  padding: 7px 4px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  line-height: 1.3;
+  border: 1px solid transparent;
+}
+
+.cat-tab span { display: block; font-size: 0.9rem; margin-bottom: 1px; }
+.cat-tab.active { color: #fff; border-color: rgba(255,255,255,0.15); }
+
+/* CARD */
+.card-area { flex: 1; min-height: 0; }
+
+.game-card {
+  background: rgba(36, 24, 72, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 24px 20px 20px;
+  min-height: 200px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 24px 24px 0 0;
+  transition: background 0.4s;
+}
+
+.game-card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.card-badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 99px;
+}
+
+.card-player-tag {
+  position: absolute;
+  top: 12px; right: 12px;
+  font-size: 0.6rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-player-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+
+.card-emoji-big {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  display: block;
+  margin-top: 8px;
+}
+
+.card-question {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--text);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.card-intensity-row {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.intensity-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  transition: background 0.3s;
+}
+
+.intensity-dot.on { background: var(--accent); }
+
+.card-mood-tag {
+  margin-top: 10px;
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card-flip-anim {
+  animation: cardFlip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardFlip {
+  from { opacity:0; transform: scale(0.88) translateY(20px) rotateX(10deg); }
+  to { opacity:1; transform: scale(1) translateY(0) rotateX(0deg); }
+}
+
+/* CONTROLS */
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-next {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: all 0.18s;
+  box-shadow: 0 4px 20px rgba(232,124,168,0.25);
+}
+
+.btn-next:active { transform: scale(0.96); }
+
+.btn-skip {
+  width: 50px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-skip:active { color: var(--text); }
+
+/* BOTTOM ROW */
+.bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.progress-info {
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.btn-reset-small {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 0.65rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  padding: 4px;
+}
+
+/* MUSIC PANEL */
+#music-panel {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(15,10,30,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 16px 20px calc(var(--safe-bottom) + 16px);
+  z-index: 50;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+#music-panel.open { transform: translateY(0); }
+
+.music-panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  margin-bottom: 14px;
+  color: var(--text);
+}
+
+.music-tabs {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+
+.music-tab {
+  padding: 6px 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.72rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.music-tab.active { background: rgba(232,168,124,0.15); border-color: var(--accent); color: var(--accent); }
+
+.music-ambiance-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+}
+
+.ambiance-toggle {
+  width: 44px; height: 24px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.ambiance-toggle.on { background: linear-gradient(135deg, #e8a87c, #e87ca8); }
+
+.ambiance-toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: white;
+  top: 3px; left: 3px;
+  transition: transform 0.3s;
+}
+
+.ambiance-toggle.on::after { transform: translateX(20px); }
+
+.ambiance-label { font-size: 0.8rem; color: var(--text); }
+.ambiance-sub { font-size: 0.65rem; color: var(--muted); }
+
+.playlist-input-wrap {
+  display: flex; gap: 8px; margin-bottom: 10px;
+}
+
+.playlist-input {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.playlist-input::placeholder { color: var(--muted); }
+
+.btn-open-playlist {
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #e8a87c, #e87ca8);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+
+.music-close {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 4px;
+}
+
+.music-panel-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 40;
+  display: none;
+}
+
+.music-panel-overlay.open { display: block; }
+
+/* CATEGORY COLORS */
+.cat-vérité::before, .fill-vérité { background: var(--cat-vérité) !important; }
+.cat-action::before, .fill-action { background: var(--cat-action) !important; }
+.cat-choix::before, .fill-choix { background: var(--cat-choix) !important; }
+.cat-complète::before, .fill-complète { background: var(--cat-complète) !important; }
+.cat-souvenir::before, .fill-souvenir { background: var(--cat-souvenir) !important; }
+.cat-imaginaire::before, .fill-imaginaire { background: var(--cat-imaginaire) !important; }
+.cat-face::before, .fill-face { background: var(--cat-face) !important; }
+.cat-filtre::before, .fill-filtre { background: var(--cat-filtre) !important; }
+.cat-ressenti::before, .fill-ressenti { background: var(--cat-ressenti) !important; }
+
+.badge-vérité { background:rgba(126,184,212,0.15); color:#9ed4e8; }
+.badge-action { background:rgba(212,160,126,0.15); color:#e8c0a0; }
+.badge-choix { background:rgba(160,126,212,0.15); color:#c0a0e8; }
+.badge-complète { background:rgba(126,212,160,0.15); color:#a0e8c0; }
+.badge-souvenir { background:rgba(212,192,126,0.15); color:#e8d8a0; }
+.badge-imaginaire { background:rgba(212,126,184,0.15); color:#e8a0d0; }
+.badge-face { background:rgba(126,212,212,0.15); color:#a0e8e8; }
+.badge-filtre { background:rgba(212,126,126,0.15); color:#e8a0a0; }
+.badge-ressenti { background:rgba(160,184,212,0.15); color:#c0d0e8; }
+
+.cat-tab.active[data-cat="vérité"] { background:rgba(126,184,212,0.15); border-color:rgba(126,184,212,0.3); }
+.cat-tab.active[data-cat="action"] { background:rgba(212,160,126,0.15); border-color:rgba(212,160,126,0.3); }
+.cat-tab.active[data-cat="choix"] { background:rgba(160,126,212,0.15); border-color:rgba(160,126,212,0.3); }
+.cat-tab.active[data-cat="complète"] { background:rgba(126,212,160,0.15); border-color:rgba(126,212,160,0.3); }
+.cat-tab.active[data-cat="souvenir"] { background:rgba(212,192,126,0.15); border-color:rgba(212,192,126,0.3); }
+.cat-tab.active[data-cat="imaginaire"] { background:rgba(212,126,184,0.15); border-color:rgba(212,126,184,0.3); }
+.cat-tab.active[data-cat="face"] { background:rgba(126,212,212,0.15); border-color:rgba(126,212,212,0.3); }
+.cat-tab.active[data-cat="filtre"] { background:rgba(212,126,126,0.15); border-color:rgba(212,126,126,0.3); }
+.cat-tab.active[data-cat="ressenti"] { background:rgba(160,184,212,0.15); border-color:rgba(160,184,212,0.3); }
+
+/* INSTALL BANNER */
+#installBanner {
+  display:none;
+  background:rgba(232,168,124,0.1);
+  border:1px solid rgba(232,168,124,0.2);
+  border-radius:12px;
+  padding:10px 14px;
+  margin-bottom:10px;
+  font-size:0.75rem;
+  color:var(--accent2);
+  text-align:center;
+  cursor:pointer;
+  width:100%;
+}
+
+.empty-card {
+  display:flex; flex-direction:column; align-items:center; gap:12px; padding:20px;
+}
+.empty-card span { font-size:3rem; }
+.empty-card p { font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--muted); text-align:center; }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas">
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+</div>
+<div class="stars"></div>
+
+<!-- ===== SCREEN 1 — ACCUEIL ===== -->
+<div class="screen" id="screen-home">
+  <div class="logo-wrap">
+    <div class="logo-icon">
+      <div class="logo-ring">
+        <div class="logo-inner">🌙</div>
+      </div>
+    </div>
+    <div class="logo-title">Soirée <span>Chill</span></div>
+    <div class="logo-sub">une nuit pour se découvrir</div>
+  </div>
+  <p class="home-desc">Des questions qui créent des instants. Des instants qui deviennent des souvenirs.</p>
+  <button class="btn-start" onclick="goToPlayers()">Commencer la soirée</button>
+  <div class="home-stats">
+    <div class="home-stat">
+      <div class="home-stat-num">450+</div>
+      <div class="home-stat-label">Questions</div>
+    </div>
+    <div class="home-stat">
+      <div class="home-stat-num">9</div>
+      <div class="home-stat-label">Catégories</div>
+    </div>
+    <div class="home-stat">
+      <div class="home-stat-num">∞</div>
+      <div class="home-stat-label">Joueurs</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2 — JOUEURS ===== -->
+<div class="screen hidden" id="screen-players">
+  <div class="screen-title">Les <span>joueurs</span></div>
+  <p class="screen-sub">Ajoute au moins 2 joueurs</p>
+  <div id="installBanner" onclick="installApp()">📲 Installer l'app sur l'écran d'accueil</div>
+  <div class="players-list" id="playersList"></div>
+  <button class="btn-add-player" onclick="addPlayer()">+ Ajouter un joueur</button>
+  <button class="btn-play" onclick="startGame()">Lancer le jeu ✨</button>
+  <button class="btn-back" onclick="goBack('screen-home')">← Retour</button>
+</div>
+
+<!-- ===== SCREEN 3 — JEU ===== -->
+<div class="screen hidden" id="screen-game" style="padding:0; justify-content:flex-start;">
+  <div class="game-container" style="padding: calc(var(--safe-top) + 12px) 16px calc(var(--safe-bottom) + 12px);">
+
+    <div class="top-bar">
+      <div class="top-logo">Soirée Chill 🌙</div>
+      <div class="top-actions">
+        <button class="icon-btn" id="audioIconBtn" onclick="toggleMusicPanel()" title="Musique">🎵</button>
+        <button class="icon-btn" onclick="goBack('screen-home')" title="Accueil">⌂</button>
+      </div>
+    </div>
+
+    <div class="players-bar" id="playersBar"></div>
+
+    <div class="mood-bar">
+      <span class="mood-label">Ambiance</span>
+      <div class="mood-track"><div class="mood-fill" id="moodFill"></div></div>
+      <span class="mood-emoji" id="moodEmoji">😊</span>
+    </div>
+
+    <div class="cat-tabs" id="catTabs"></div>
+
+    <div class="card-area">
+      <div class="game-card" id="mainCard">
+        <div class="game-card-glow" id="cardGlow"></div>
+        <span class="card-emoji-big">🎴</span>
+        <p class="card-question">Appuie sur "Nouvelle carte" pour commencer</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-next" id="nextBtn" onclick="nextCard()">Nouvelle carte</button>
+      <button class="btn-skip" onclick="skipCard()" title="Passer">↷</button>
+    </div>
+
+    <div class="bottom-row">
+      <span class="progress-info" id="progressInfo">Prêt à jouer</span>
+      <button class="btn-reset-small" onclick="resetGame()">↺ Recommencer</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MUSIC PANEL -->
+<div class="music-panel-overlay" id="musicOverlay" onclick="toggleMusicPanel()"></div>
+<div id="music-panel">
+  <div class="music-panel-title">🎵 Ambiance musicale</div>
+  <div class="music-tabs">
+    <button class="music-tab active" onclick="switchMusicTab('ambiance', this)">Ambiance</button>
+    <button class="music-tab" onclick="switchMusicTab('playlist', this)">Playlist</button>
+  </div>
+
+  <div id="tab-ambiance">
+    <div class="music-ambiance-row">
+      <button class="ambiance-toggle" id="ambianceToggle" onclick="toggleAudio()"></button>
+      <div>
+        <div class="ambiance-label">Sons génératifs</div>
+        <div class="ambiance-sub">Nappes douces et notes de piano</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-playlist" style="display:none;">
+    <div style="font-size:0.75rem; color:var(--muted); margin-bottom:10px;">Colle un lien YouTube, Spotify ou autre</div>
+    <div class="playlist-input-wrap">
+      <input class="playlist-input" id="playlistUrl" type="url" placeholder="https://youtube.com/...">
+      <button class="btn-open-playlist" onclick="openPlaylist()">Ouvrir ↗</button>
+    </div>
+    <div style="font-size:0.65rem; color:var(--muted);">La playlist s'ouvrira dans ton navigateur pendant que le jeu continue.</div>
+  </div>
+
+  <button class="music-close" onclick="toggleMusicPanel()">Fermer</button>
+</div>
+
+<script>
+// ============================================================
+// DATA — 9 catégories avec questions adaptées aux joueurs
+// ============================================================
+const ALL_DATA = {
+  vérité: [
+    // FUN (i:1)
+    { text: "C'est quoi l'excuse la plus ridicule que tu aies jamais inventée ?", i:1, mood:'fun' },
+    { text: "Quel est le truc le plus embarrassant que tu aies fait en public ?", i:1, mood:'fun' },
+    { text: "Si tu pouvais avoir un super-pouvoir inutile, lequel tu choisirais ?", i:1, mood:'fun' },
+    { text: "C'est quoi la chose la plus bizarre que tu aies mangée ?", i:1, mood:'fun' },
+    { text: "Quel est le film ou la série que tu regardes en cachette ?", i:1, mood:'fun' },
+    { text: "C'est quoi ton rituel le plus étrange avant de dormir ?", i:1, mood:'fun' },
+    { text: "Quel est le mensonge le plus innocent que tu répètes encore ?", i:1, mood:'fun' },
+    { text: "Si tu devais décrire ta vie en un son — lequel ?", i:1, mood:'fun' },
+    { text: "C'est quoi la chose que tu fais quand tu es seul(e) et que tu n'admettras jamais ?", i:1, mood:'fun' },
+    { text: "Quel personnage de dessin animé te ressemble le plus ?", i:1, mood:'fun' },
+    // SÉRIEUX (i:2-3)
+    { text: "Quelle est la dernière fois où tu as pleuré et pourquoi ?", i:2, mood:'sérieux' },
+    { text: "Si tu pouvais changer une seule chose dans ta vie, ce serait quoi ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la leçon la plus difficile que la vie t'ait apprise ?", i:3, mood:'sérieux' },
+    { text: "Tu es plutôt cœur ou raison dans tes décisions ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu n'as jamais dite à voix haute mais que tu ressens fort ?", i:3, mood:'sérieux' },
+    { text: "Est-ce que tu t'aimes vraiment toi-même ?", i:3, mood:'sérieux' },
+    { text: "Quelle est ta plus grande peur inavouée ?", i:3, mood:'sérieux' },
+    { text: "Qu'est-ce qui te donne envie de te lever le matin ?", i:1, mood:'sérieux' },
+    { text: "Quelle est la chose qui te manque en ce moment dans ta vie ?", i:2, mood:'sérieux' },
+    { text: "Tu gardes les gens dans ta vie par habitude ou par choix sincère ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que les gens croient sur toi qui est fausse ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la décision que tu regrettes le plus ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la personne qui t'a le plus marqué(e) dans ta vie ?", i:2, mood:'sérieux' },
+    { text: "Est-ce que tu penses que tu mérites ce que tu désires vraiment ?", i:3, mood:'sérieux' },
+    { text: "Si on te décrivait en 3 mots, lesquels aurais-tu voulu entendre ?", i:1, mood:'sérieux' },
+    // FLIRTY (i:2-3)
+    { text: "C'est quoi ton type de personne idéale — en vrai, sans filtre ?", i:2, mood:'flirty' },
+    { text: "C'est quoi pour toi un signe que quelqu'un te plaît vraiment ?", i:2, mood:'flirty' },
+    { text: "Tu préfères être aimé(e) ou admiré(e) ?", i:2, mood:'flirty' },
+    { text: "Tu as déjà eu le coup de foudre ? C'était comment ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose la plus douce que quelqu'un t'ait dite ?", i:2, mood:'flirty' },
+    { text: "C'est quoi ton langage d'amour — comment tu montres que tu tiens à quelqu'un ?", i:2, mood:'flirty' },
+    { text: "Tu préfères un amour passionné et intense ou un amour calme et stable ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le geste qui te touche le plus de la part de quelqu'un ?", i:2, mood:'flirty' },
+    { text: "Qu'est-ce qui te rend vulnérable sans que tu le veuilles ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a quelque chose que tu voulais me dire depuis longtemps ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la différence entre quelqu'un que tu aimes et quelqu'un qui te manque ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose que tu voudrais que les gens sachent sur toi sans avoir à l'expliquer ?", i:3, mood:'flirty' },
+    { text: "Tu fais confiance facilement aux gens ?", i:2, mood:'flirty' },
+    { text: "Tu es de ceux qui gardent les gens ou tu laisses partir facilement ?", i:2, mood:'flirty' },
+    { text: "Si tu pouvais lire dans les pensées de quelqu'un ce soir, qui ce serait ?", i:3, mood:'flirty' },
+    { text: "Tu as déjà eu le sentiment d'être incompris(e) par quelqu'un qui compte ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu n'oserais jamais dire en premier ?", i:3, mood:'flirty' },
+    { text: "Quelle qualité chez quelqu'un te fait baisser la garde automatiquement ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le comportement chez quelqu'un qui te dit qu'il/elle tient à toi ?", i:2, mood:'flirty' },
+    { text: "Si tu pouvais revivre une journée de ta vie, laquelle ce serait ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu fais quand tu es triste et que personne ne le sait ?", i:3, mood:'sérieux' },
+    { text: "Quelle est ta définition personnelle du bonheur ?", i:1, mood:'sérieux' },
+    { text: "Si tu pouvais effacer un souvenir, lequel ce serait ?", i:3, mood:'sérieux' },
+    { text: "Tu penses que le destin existe ou on construit soi-même sa vie ?", i:1, mood:'sérieux' },
+    { text: "Quelle est la chose que tu fais semblant de ne pas remarquer ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu as eu le plus peur dans ta vie ?", i:2, mood:'sérieux' },
+    { text: "Quelle chanson résume parfaitement ton état d'esprit en ce moment ?", i:1, mood:'fun' },
+    { text: "Si tu devais décrire ta vie en un film, lequel ce serait ?", i:1, mood:'fun' },
+    { text: "Quelle est la chose dont tu es le plus fier(e) en ce moment ?", i:1, mood:'sérieux' },
+    { text: "Tu t'imagines dans 5 ans, tu fais quoi ?", i:1, mood:'sérieux' },
+  ],
+
+  action: [
+    { text: "Montre ta photo la plus récente dans ta galerie.", i:1, mood:'fun' },
+    { text: "Imite la façon dont quelqu'un d'autre dans ce groupe parle.", i:1, mood:'fun' },
+    { text: "Dis quelque chose de gentil sur chaque personne autour de toi.", i:1, mood:'fun' },
+    { text: "Fais un son d'animal qui te représente en ce moment.", i:1, mood:'fun' },
+    { text: "Essaie de faire rire quelqu'un en moins de 30 secondes.", i:1, mood:'fun' },
+    { text: "Fais semblant d'être une autre personne du groupe pendant 1 minute.", i:1, mood:'fun' },
+    { text: "Chante le premier refrain qui te vient en tête.", i:1, mood:'fun' },
+    { text: "Montre ton dernier emoji utilisé et explique pourquoi.", i:1, mood:'fun' },
+    { text: "Mime une émotion — les autres doivent deviner laquelle.", i:1, mood:'fun' },
+    { text: "Dis quelque chose dans une langue que tu ne parles pas couramment.", i:1, mood:'fun' },
+    { text: "Montre ta chanson en repeat en ce moment.", i:1, mood:'fun' },
+    { text: "Envoie un message à quelqu'un que tu n'as pas contacté depuis longtemps.", i:2, mood:'fun' },
+    { text: "Fais un dessin rapide qui représente ton humeur — les autres devinent.", i:1, mood:'fun' },
+    { text: "Décris ta journée idéale de A à Z en 1 minute.", i:1, mood:'sérieux' },
+    { text: "Choisis une chanson qui correspond à l'ambiance de ce soir et joue-la.", i:2, mood:'fun' },
+    { text: "Raconte une histoire en 30 secondes avec quelqu'un du groupe comme héros.", i:1, mood:'fun' },
+    { text: "Dis 3 mots qui décrivent exactement comment tu te sens là.", i:2, mood:'sérieux' },
+    { text: "Ferme les yeux — dis ce que tu vois quand tu penses à une belle journée parfaite.", i:2, mood:'sérieux' },
+    { text: "Parle pendant 1 minute de quelque chose qui te passionne vraiment.", i:1, mood:'sérieux' },
+    { text: "Pose ta main sur ta poitrine, ferme les yeux, dis ce que tu ressens.", i:3, mood:'sérieux' },
+    { text: "Dis le nom de la dernière personne à qui tu as pensé avant de t'endormir hier.", i:3, mood:'flirty' },
+    { text: "Décris quelqu'un du groupe comme si c'était un personnage de roman.", i:2, mood:'fun' },
+    { text: "Dis ce que tu ferais si tu n'avais peur de rien.", i:2, mood:'sérieux' },
+    { text: "Regarde quelqu'un dans les yeux pendant 15 secondes sans parler.", i:3, mood:'flirty' },
+    { text: "Récite une citation qui compte vraiment pour toi.", i:2, mood:'sérieux' },
+    { text: "Montre quelque chose sur toi qui a une histoire.", i:2, mood:'sérieux' },
+    { text: "Raconte le meilleur moment de ta semaine en 1 minute.", i:1, mood:'fun' },
+    { text: "Dis à voix haute une pensée que tu gardes souvent pour toi.", i:3, mood:'sérieux' },
+    { text: "Choisis un surnom pour quelqu'un du groupe et explique pourquoi.", i:2, mood:'fun' },
+    { text: "Montre une photo de quelqu'un que tu aimes et parle-en.", i:2, mood:'sérieux' },
+    { text: "Explique pourquoi tu es là ce soir en 3 phrases honnêtes.", i:3, mood:'sérieux' },
+    { text: "Écris un mot sur du papier — montre-le sans l'expliquer.", i:3, mood:'sérieux' },
+    { text: "Dis ce qui te manquerait le plus si tu ne voyais plus les gens de ce groupe.", i:3, mood:'sérieux' },
+    { text: "Fais une promesse — même petite — à quelqu'un du groupe.", i:3, mood:'sérieux' },
+    { text: "Envoie un message vocal de 10 secondes en chuchotant.", i:2, mood:'flirty' },
+    { text: "Décris quelqu'un du groupe en une couleur et explique pourquoi.", i:2, mood:'fun' },
+    { text: "Dis ce que tu aurais fait différemment dans ta journée d'aujourd'hui.", i:2, mood:'sérieux' },
+    { text: "Dis ce que tu penses que les autres pensent de toi en ce moment.", i:3, mood:'flirty' },
+    { text: "Montre le dernier message que tu as reçu (sans lire le nom).", i:2, mood:'fun' },
+    { text: "Dis ce que tu remarques en premier chez les gens que tu rencontres.", i:2, mood:'sérieux' },
+    { text: "Essaie d'expliquer ce que c'est que la solitude sans utiliser ce mot.", i:3, mood:'sérieux' },
+    { text: "Dis la dernière chose qui t'a vraiment fait rire.", i:1, mood:'fun' },
+    { text: "Décris quelqu'un du groupe comme si tu le/la présentais à quelqu'un.", i:2, mood:'fun' },
+    { text: "Fais un compliment sincère à chaque personne du groupe.", i:2, mood:'fun' },
+    { text: "Dis 3 choses que tu apprécies chez la personne à ta droite.", i:2, mood:'fun' },
+    { text: "Mime une scène de film — les autres devinent.", i:1, mood:'fun' },
+    { text: "Montre une photo qui te représente vraiment.", i:2, mood:'sérieux' },
+    { text: "Dis ce que tu ferais pendant 24h si tu n'avais aucune contrainte.", i:2, mood:'fun' },
+    { text: "Montre ton fond d'écran et explique pourquoi tu l'as choisi.", i:1, mood:'fun' },
+    { text: "Dis quelque chose que tu n'aurais jamais dit sans ce jeu.", i:3, mood:'flirty' },
+  ],
+
+  choix: [
+    { text: "Amour passionné et éphémère OU amour calme et durable ?", i:2, mood:'flirty' },
+    { text: "Savoir la vérité douloureuse OU vivre dans un beau mensonge ?", i:3, mood:'sérieux' },
+    { text: "Être trop aimé(e) sans aimer autant OU aimer fort sans être aimé(e) en retour ?", i:3, mood:'flirty' },
+    { text: "Voyager seul(e) partout OU rester avec quelqu'un mais ne jamais partir ?", i:2, mood:'sérieux' },
+    { text: "Avoir beaucoup d'amis superficiels OU une seule personne qui te comprend vraiment ?", i:2, mood:'sérieux' },
+    { text: "Lire dans les pensées des gens OU être invisible quand tu le veux ?", i:1, mood:'fun' },
+    { text: "Oublier toutes les mauvaises expériences OU se souvenir de tout mais être plus fort(e) ?", i:3, mood:'sérieux' },
+    { text: "Être très riche mais seul(e) OU modeste mais entouré(e) d'amour ?", i:2, mood:'sérieux' },
+    { text: "Une grande histoire d'amour qui finit mal OU une vie sans grand amour mais tranquille ?", i:3, mood:'flirty' },
+    { text: "Être le premier à tomber amoureux OU attendre d'être aimé(e) en premier ?", i:3, mood:'flirty' },
+    { text: "Connaître la date de ta mort OU ne jamais la savoir ?", i:3, mood:'sérieux' },
+    { text: "Être trop sensible OU ne rien ressentir ?", i:3, mood:'sérieux' },
+    { text: "Un câlin long et sincère OU une conversation de 3h qui change tout ?", i:2, mood:'flirty' },
+    { text: "Être aimé(e) pour ce que tu fais OU pour ce que tu es ?", i:2, mood:'sérieux' },
+    { text: "Pardonner mais ne pas oublier OU oublier mais ne jamais vraiment pardonner ?", i:3, mood:'sérieux' },
+    { text: "Tomber amoureux/se spontanément OU choisir rationnellement la bonne personne ?", i:3, mood:'flirty' },
+    { text: "Un premier regard qui fait tout OU une amitié qui devient amour ?", i:2, mood:'flirty' },
+    { text: "Dire je t'aime en premier OU attendre de l'entendre ?", i:3, mood:'flirty' },
+    { text: "Être compris(e) sans expliquer OU expliquer et être enfin compris(e) ?", i:2, mood:'sérieux' },
+    { text: "Une journée parfaite avec la mauvaise personne OU une journée ordinaire avec la bonne ?", i:3, mood:'flirty' },
+    { text: "Aimer quelqu'un qui te change OU quelqu'un qui t'accepte tel(le) que tu es ?", i:2, mood:'flirty' },
+    { text: "Être la priorité de quelqu'un OU être libre de tout ?", i:3, mood:'flirty' },
+    { text: "Garder les gens même quand ça fait mal OU lâcher facilement pour te protéger ?", i:3, mood:'sérieux' },
+    { text: "Un message à 3h du matin qui dit tout OU un silence qui dit la même chose ?", i:3, mood:'flirty' },
+    { text: "Être fort(e) tout le temps OU avoir le droit d'être fragile parfois ?", i:3, mood:'sérieux' },
+    { text: "Rencontrer ta personne trop tôt OU trop tard ?", i:3, mood:'flirty' },
+    { text: "Être aimé(e) en secret OU aimé(e) publiquement ?", i:2, mood:'flirty' },
+    { text: "Ressentir beaucoup et souffrir OU ressentir peu et vivre tranquille ?", i:3, mood:'sérieux' },
+    { text: "Avoir raison et perdre quelqu'un OU avoir tort et le garder ?", i:3, mood:'sérieux' },
+    { text: "Être quelqu'un de mémorable pour peu de gens OU ordinaire pour beaucoup ?", i:2, mood:'sérieux' },
+    { text: "Être honnête et blesser OU mentir et protéger ?", i:3, mood:'sérieux' },
+    { text: "Vivre une belle histoire courte OU une histoire longue avec des hauts et des bas ?", i:2, mood:'flirty' },
+    { text: "Que la personne qui compte le plus pour toi soit heureuse sans toi OU malheureuse avec toi ?", i:3, mood:'flirty' },
+    { text: "Pouvoir voler OU être invisible — une seule réponse ?", i:1, mood:'fun' },
+    { text: "Pizza ou sushi pour le reste de ta vie — choix définitif ?", i:1, mood:'fun' },
+    { text: "Toujours arriver en retard OU toujours arriver 1h trop tôt ?", i:1, mood:'fun' },
+    { text: "Parler 5 langues OU jouer de 5 instruments ?", i:1, mood:'fun' },
+    { text: "Ne plus jamais dormir OU ne plus jamais manger ?", i:1, mood:'fun' },
+    { text: "Tout recommencer à zéro OU continuer là où tu en es avec plus de sagesse ?", i:2, mood:'sérieux' },
+    { text: "Connaître ton futur OU avoir la liberté de le construire ?", i:2, mood:'sérieux' },
+    { text: "Être courageux(se) mais seul(e) OU prudent(e) mais accompagné(e) ?", i:2, mood:'sérieux' },
+    { text: "Choisir avec ton cœur et te tromper OU choisir avec ta tête et ne jamais savoir ?", i:3, mood:'sérieux' },
+    { text: "Un amour impossible qui te hante OU un amour possible mais sans magie ?", i:3, mood:'flirty' },
+    { text: "Être aimé(e) passionnément pendant 1 an OU tendrement toute une vie ?", i:3, mood:'flirty' },
+    { text: "Recommencer une vieille histoire OU écrire quelque chose de nouveau ?", i:2, mood:'flirty' },
+    { text: "Un sourire qui cache tout OU des larmes qui libèrent tout ?", i:3, mood:'sérieux' },
+    { text: "Vivre intensément 50 ans OU vivre calmement 100 ans ?", i:2, mood:'sérieux' },
+    { text: "Réussir seul(e) dans ta vie OU réussir grâce à quelqu'un mais partager le mérite ?", i:2, mood:'sérieux' },
+    { text: "Dire toujours ce que tu penses OU toujours savoir quoi dire ?", i:2, mood:'sérieux' },
+    { text: "Être trop drôle OU être trop sérieux(se) — lequel est pire ?", i:1, mood:'fun' },
+  ],
+
+  complète: [
+    { text: "Avec toi, je me sens...", i:2, mood:'flirty' },
+    { text: "La chose que je n'ai encore jamais dite à voix haute, c'est...", i:3, mood:'sérieux' },
+    { text: "Quand je suis seul(e), je pense souvent à...", i:2, mood:'sérieux' },
+    { text: "Le moment où j'ai vraiment souri aujourd'hui, c'était...", i:1, mood:'fun' },
+    { text: "Si tu pouvais voir dans ma tête là maintenant, tu verrais...", i:3, mood:'flirty' },
+    { text: "Ce qui me manque en ce moment, c'est...", i:2, mood:'sérieux' },
+    { text: "Ce soir, ce que j'ai vraiment envie de...", i:3, mood:'flirty' },
+    { text: "Quand quelqu'un me plaît vraiment, je...", i:2, mood:'flirty' },
+    { text: "Je suis difficile à comprendre parce que...", i:3, mood:'sérieux' },
+    { text: "Le mot qui me décrit le mieux en ce moment, c'est...", i:2, mood:'sérieux' },
+    { text: "La chose qui me fait le plus peur dans une relation, c'est...", i:3, mood:'flirty' },
+    { text: "Ce que j'aimerais que tu saches sur moi, c'est...", i:3, mood:'sérieux' },
+    { text: "La meilleure version de moi-même, elle ressemble à...", i:2, mood:'sérieux' },
+    { text: "Ce que je cherche vraiment chez quelqu'un, c'est...", i:2, mood:'flirty' },
+    { text: "Mon plus grand rêve que je n'ai jamais dit à voix haute, c'est...", i:3, mood:'sérieux' },
+    { text: "Quand tu es là, je me sens différent(e) parce que...", i:3, mood:'flirty' },
+    { text: "L'amour pour moi c'est...", i:2, mood:'flirty' },
+    { text: "Je me sens vraiment moi-même quand...", i:2, mood:'sérieux' },
+    { text: "Ce que je n'arrive pas à oublier même quand j'essaie, c'est...", i:3, mood:'sérieux' },
+    { text: "Si tu me demandais ce que je ressens là maintenant, je dirais...", i:3, mood:'flirty' },
+    { text: "Ce que j'aurais voulu entendre quand j'avais besoin de quelqu'un, c'est...", i:3, mood:'sérieux' },
+    { text: "Si j'avais une seule chose à te dire ce soir, ce serait...", i:3, mood:'flirty' },
+    { text: "La chose que je garde toujours pour moi mais qui me pèse, c'est...", i:3, mood:'sérieux' },
+    { text: "Ma façon d'aimer, elle ressemble à...", i:3, mood:'flirty' },
+    { text: "Ce que je n'ai pas encore osé faire mais que j'ai envie de faire, c'est...", i:3, mood:'flirty' },
+    { text: "Quand quelqu'un me manque vraiment, je...", i:2, mood:'sérieux' },
+    { text: "Le moment où j'ai su que tu comptais pour moi, c'était...", i:3, mood:'flirty' },
+    { text: "Ce que je cherche sans toujours l'admettre, c'est...", i:3, mood:'sérieux' },
+    { text: "Si ce soir était le dernier soir, je dirais...", i:3, mood:'flirty' },
+    { text: "Ce que je ressens en ce moment mais que j'ai du mal à mettre en mots, c'est...", i:3, mood:'sérieux' },
+    { text: "La chose qui me rend unique selon moi, c'est...", i:2, mood:'sérieux' },
+    { text: "Quand je suis heureux/se, j'ai envie de...", i:1, mood:'fun' },
+    { text: "La chose qui me donne de la force même quand tout va mal, c'est...", i:2, mood:'sérieux' },
+    { text: "Ce soir, ce que j'apprécie le plus c'est...", i:1, mood:'fun' },
+    { text: "La chose qui me rend le plus nostalgique(e), c'est...", i:2, mood:'sérieux' },
+    { text: "Ce qui me donne encore envie de croire en quelque chose, c'est...", i:2, mood:'sérieux' },
+    { text: "Si je pouvais tout recommencer, je...", i:2, mood:'sérieux' },
+    { text: "La chose que je veux accomplir avant tout, c'est...", i:1, mood:'sérieux' },
+    { text: "Si on se revoyait dans 10 ans, j'espère que tu te souviendrais de...", i:3, mood:'flirty' },
+    { text: "Ce que j'aime dans les soirées comme celle-là, c'est...", i:1, mood:'fun' },
+    { text: "La chose que les gens ne voient pas souvent en moi, c'est...", i:2, mood:'sérieux' },
+    { text: "Ce qui me manquerait le plus si tu n'étais plus là, c'est...", i:3, mood:'flirty' },
+    { text: "La dernière fois que j'ai ressenti quelque chose de fort, c'était...", i:2, mood:'sérieux' },
+    { text: "La chose qui me donne envie de me battre pour quelqu'un, c'est...", i:3, mood:'flirty' },
+    { text: "Ce que je veux vraiment en ce moment dans ma vie, c'est...", i:2, mood:'sérieux' },
+    { text: "Si j'avais su avant ce que je sais maintenant, j'aurais...", i:2, mood:'sérieux' },
+    { text: "La chose qui m'a changé(e) sans que je m'en rende compte, c'est...", i:2, mood:'sérieux' },
+    { text: "Quand je suis triste, ce dont j'ai besoin c'est...", i:2, mood:'sérieux' },
+    { text: "La personne qui m'a le plus appris quelque chose, c'est...", i:2, mood:'sérieux' },
+    { text: "Ce que je ferais si j'avais une journée entière sans aucune responsabilité, c'est...", i:1, mood:'fun' },
+  ],
+
+  souvenir: [
+    { text: "Quel est le souvenir d'enfance qui te revient le plus souvent ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu as ri aux larmes pour la dernière fois ?", i:1, mood:'fun' },
+    { text: "Quel est le souvenir que tu chéris le plus en secret ?", i:3, mood:'sérieux' },
+    { text: "Y a-t-il un souvenir que tu essaies d'oublier mais qui revient toujours ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la première chose dont tu te souviens dans ta vie ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le cadeau le plus mémorable que tu aies jamais reçu ?", i:1, mood:'fun' },
+    { text: "Raconte un moment où tu as été surpris(e) de façon inattendue.", i:1, mood:'fun' },
+    { text: "Quel est le souvenir qui te fait encore sourire rien qu'en y pensant ?", i:1, mood:'fun' },
+    { text: "C'est quoi la dernière fois où tu as ressenti une vraie paix intérieure ?", i:2, mood:'sérieux' },
+    { text: "Quel est le voyage ou la sortie qui t'a le plus marqué(e) ?", i:1, mood:'fun' },
+    { text: "C'est quoi le moment où tu as réalisé que tu avais grandi ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la conversation la plus importante que tu aies jamais eue ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le souvenir que tu aimerais partager ce soir ?", i:2, mood:'fun' },
+    { text: "Y a-t-il un endroit qui te manque vraiment ? Pourquoi ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chanson qui te ramène immédiatement à un souvenir précis ?", i:1, mood:'fun' },
+    { text: "C'est quoi la chose la plus courageuse que tu aies faite dans ta vie ?", i:2, mood:'sérieux' },
+    { text: "Quel est le souvenir avec quelqu'un que tu n'as plus dans ta vie ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la nuit que tu aimerais revivre exactement comme elle s'est passée ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le moment où tu t'es senti(e) le plus libre ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la décision dont tu es le plus fier(e) jusqu'ici ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le souvenir le plus doux que tu gardes d'un proche ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la dernière fois où tu as pleuré de joie ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu as réalisé que tu comptais pour quelqu'un ?", i:3, mood:'flirty' },
+    { text: "Quelle est la chose la plus spontanée que tu aies jamais faite ?", i:1, mood:'fun' },
+    { text: "C'est quoi le souvenir qui te donne envie de recommencer ?", i:2, mood:'fun' },
+    { text: "C'est quoi le moment le plus calme et paisible dont tu te souviens ?", i:1, mood:'sérieux' },
+    { text: "Quelle est la rencontre qui a changé quelque chose en toi ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi la dernière fois où tu as fait quelque chose de fou ?", i:1, mood:'fun' },
+    { text: "Quel est le souvenir que tu aimerais que les autres aient de toi ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu as su que tu aimais vraiment quelqu'un ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le moment où tu as le plus ri avec quelqu'un ?", i:1, mood:'fun' },
+    { text: "Quelle est la chose que tu as faite une seule fois mais que tu n'oubliera jamais ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le souvenir le plus étrange mais beau à la fois ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la promesse qu'on t'a tenue et qui t'a marqué(e) ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu t'es senti(e) le moins seul(e) de ta vie ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le souvenir qui te manque le plus en ce moment ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu as apprise de quelqu'un et que tu pratiques encore ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le moment où quelqu'un t'a dit exactement ce que tu avais besoin d'entendre ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la photo que tu n'as pas mais que tu aurais voulu prendre ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le souvenir qui te prouve que la vie peut être belle ?", i:2, mood:'sérieux' },
+    { text: "Quel est le moment où tu t'es senti(e) le plus fier(e) de toi ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la chose que tu faisais petit(e) et que tu aimerais refaire ce soir ?", i:1, mood:'fun' },
+    { text: "C'est quoi le moment où tu as découvert quelque chose sur toi-même ?", i:3, mood:'sérieux' },
+    { text: "Quel est le souvenir qui te fait encore rougir ?", i:2, mood:'fun' },
+    { text: "C'est quoi la dernière fois où tu as fait confiance à quelqu'un les yeux fermés ?", i:2, mood:'flirty' },
+    { text: "Quel est le moment où tu as eu le plus peur mais que tu referais quand même ?", i:2, mood:'fun' },
+    { text: "C'est quoi la dernière fois où quelqu'un t'a vraiment surpris(e) en bien ?", i:2, mood:'fun' },
+    { text: "Quel souvenir associes-tu à une odeur précise ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu as réalisé que quelqu'un tenait vraiment à toi ?", i:3, mood:'flirty' },
+    { text: "Quelle est la nuit la plus mémorable de ta vie — pas forcément dramatique ?", i:2, mood:'flirty' },
+  ],
+
+  imaginaire: [
+    { text: "Et si tu pouvais passer une journée avec n'importe qui, vivant ou mort — qui tu choisis ?", i:1, mood:'fun' },
+    { text: "Et si tu découvrais demain que tu as un talent caché — lequel tu aimerais que ce soit ?", i:1, mood:'fun' },
+    { text: "Et si tu pouvais envoyer un message à ton moi de 10 ans — une seule phrase, laquelle ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais vivre dans n'importe quelle époque — laquelle tu choisirais ?", i:1, mood:'fun' },
+    { text: "Et si demain tu te réveillais dans une autre ville du monde — laquelle ?", i:1, mood:'fun' },
+    { text: "Et si tu pouvais tout recommencer depuis tes 15 ans en gardant ce que tu sais maintenant ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais lire une seule pensée de quelqu'un ce soir — de qui ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais changer une seule règle de la société — laquelle ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais offrir un super-pouvoir à quelqu'un — qui et lequel ?", i:1, mood:'fun' },
+    { text: "Et si cette nuit tu pouvais parler à quelqu'un que tu as perdu — que lui dirais-tu ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais vivre sans aucune peur pendant 24h — qu'est-ce que tu ferais ?", i:2, mood:'fun' },
+    { text: "Et si tu pouvais voir comment ta vie se passe dans 10 ans — tu regarderais ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais changer quelque chose dans la façon dont les gens te voient — quoi ?", i:2, mood:'sérieux' },
+    { text: "Et si tu avais une seule nuit pour faire quelque chose d'inoubliable — ce serait quoi ?", i:2, mood:'fun' },
+    { text: "Et si quelqu'un t'offrait un aller simple pour n'importe où — tu pars ou tu restes ?", i:2, mood:'fun' },
+    { text: "Et si tu pouvais recevoir une lettre de ton toi du futur — tu voudrais la lire ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais ne ressentir aucune jalousie ni aucune peur du rejet — tu ferais quoi ce soir ?", i:3, mood:'flirty' },
+    { text: "Et si tu découvrais que quelqu'un t'aime en secret depuis longtemps — comment tu réagis ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais tout dire ce soir sans conséquence — par où tu commences ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais être invisible pendant une heure — où tu irais ?", i:1, mood:'fun' },
+    { text: "Et si quelqu'un te demandait de tout laisser tomber pour partir à l'aventure — tu pars ?", i:2, mood:'fun' },
+    { text: "Et si tu découvrais que cette soirée est le début de quelque chose — de quoi tu aimerais que ce soit ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais vivre sans regrets — quel serait ton premier geste demain matin ?", i:2, mood:'sérieux' },
+    { text: "Et si tu avais 3 souhaits — lesquels, honnêtement ?", i:1, mood:'fun' },
+    { text: "Et si tu pouvais sentir exactement ce que quelqu'un ressent en ce moment — tu voudrais ?", i:3, mood:'flirty' },
+    { text: "Et si tu n'avais plus jamais à justifier tes choix à personne — ta vie changerait comment ?", i:2, mood:'sérieux' },
+    { text: "Et si quelqu'un avait écrit une chanson sur toi sans que tu le saches — ça parlerait de quoi ?", i:2, mood:'flirty' },
+    { text: "Et si tu pouvais arrêter le temps pendant une heure ce soir — tu la passerais comment ?", i:2, mood:'flirty' },
+    { text: "Et si tu pouvais t'excuser pour quelque chose sans que ça fasse mal — tu t'excuserais pour quoi ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais recevoir un câlin de n'importe qui ce soir — de qui tu voudrais ?", i:2, mood:'flirty' },
+    { text: "Et si demain n'existait pas — comment tu passerais cette nuit ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais choisir une phrase que quelqu'un te dirait — laquelle ?", i:3, mood:'flirty' },
+    { text: "Et si les gens pouvaient te voir exactement comme tu es sans filtre — tu aurais peur ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais faire confiance à tout le monde sans risque — ça changerait quoi pour toi ?", i:3, mood:'sérieux' },
+    { text: "Et si cette soirée était le début d'une belle histoire — elle commencerait comment ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais offrir à quelqu'un la paix intérieure — qui tu choisirais ?", i:2, mood:'sérieux' },
+    { text: "Et si tu savais que dans 5 ans tu serais exactement là où tu veux être — ça te ferait quoi maintenant ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais choisir ton dernier souvenir avant de t'endormir chaque soir — lequel ?", i:2, mood:'sérieux' },
+    { text: "Et si tu découvrais une porte secrète dans ta maison — tu l'ouvrirais ?", i:1, mood:'fun' },
+    { text: "Et si tu pouvais parler à tous les animaux — quel serait le premier que tu interrogerais ?", i:1, mood:'fun' },
+    { text: "Et si tu pouvais effacer une seule conversation de ta vie — laquelle ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais changer une seule chose dans ta relation aux autres — ce serait quoi ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais recommencer cette journée différemment — tu changerais quoi ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais offrir une qualité à quelqu'un dans ta vie — qui et laquelle ?", i:2, mood:'sérieux' },
+    { text: "Et si tu pouvais ne jamais oublier une seule nuit de ta vie — laquelle ce serait ?", i:2, mood:'flirty' },
+    { text: "Et si demain tu te réveillais avec la certitude absolue d'être aimé(e) — ça changerait quoi ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais choisir comment les gens se souviennent de toi — que veux-tu qu'ils disent ?", i:3, mood:'sérieux' },
+    { text: "Et si tu pouvais connaître le nom de ta prochaine grande histoire d'amour — tu voudrais savoir ?", i:3, mood:'flirty' },
+    { text: "Et si tu pouvais transmettre un sentiment à quelqu'un sans parler — lequel tu transmettrais ?", i:3, mood:'flirty' },
+    { text: "Et si tu découvrais une version parallèle de ta vie où tu as fait un seul choix différent — tu voudrais la voir ?", i:3, mood:'sérieux' },
+  ],
+
+  face: [
+    { text: "La première fois qu'on s'est vus — c'est quoi la première chose que tu as remarquée ?", i:2, mood:'flirty' },
+    { text: "Est-ce qu'il y a un moment ce soir où tu t'es surpris(e) à me regarder ?", i:3, mood:'flirty' },
+    { text: "Si tu devais décrire notre relation en un seul mot — lequel ce serait ?", i:2, mood:'flirty' },
+    { text: "C'est quoi la chose que tu fais différemment quand je suis là ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a quelque chose que tu voulais me demander depuis un moment ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le moment avec moi dont tu te souviendras le plus longtemps ?", i:2, mood:'flirty' },
+    { text: "Tu penses que je te connais vraiment ou tu gardes encore des choses pour toi ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu aimerais que je comprenne sur toi sans avoir à l'expliquer ?", i:3, mood:'sérieux' },
+    { text: "Si quelqu'un nous voyait ce soir sans nous connaître, qu'est-ce qu'il penserait de nous ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le truc que je fais qui te fait sourire sans que tu me le dises ?", i:2, mood:'flirty' },
+    { text: "Est-ce qu'il y a eu un moment où tu as failli me dire quelque chose d'important ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la question que tu aurais voulu que ce jeu te pose ce soir ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu fais quand tu penses à moi ?", i:3, mood:'flirty' },
+    { text: "Est-ce que tu penses que je te vois vraiment tel(le) que tu es ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu as eu envie de te rapprocher de moi ?", i:3, mood:'flirty' },
+    { text: "Si tu pouvais me poser une seule question avec la garantie d'une réponse honnête — laquelle ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu fais naturellement avec moi mais jamais avec les autres ?", i:3, mood:'flirty' },
+    { text: "Est-ce que tu penses qu'on se ressemble plus qu'on ne le montre ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le truc chez moi qui t'intrigue encore ?", i:2, mood:'flirty' },
+    { text: "Si tu pouvais m'offrir quelque chose d'invisible — une sensation, un sentiment — ce serait quoi ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a un moment où tu as eu peur de me perdre ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la façon dont je t'ai surpris(e) le plus depuis qu'on se connaît ?", i:2, mood:'flirty' },
+    { text: "Si tu devais écrire une seule phrase sur moi dans un carnet — ce serait quoi ?", i:3, mood:'flirty' },
+    { text: "Est-ce que tu penses que je sais à quel point tu comptes pour moi ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu remarques chez moi que les autres ne voient probablement pas ?", i:3, mood:'flirty' },
+    { text: "Si cette soirée pouvait marquer le début de quelque chose — de quoi tu aimerais que ce soit ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose la plus honnête que tu pourrais me dire là maintenant ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a un moment où tu as senti qu'on était sur la même longueur d'onde sans parler ?", i:2, mood:'flirty' },
+    { text: "C'est quoi la chose que tu aimes dans notre façon d'être ensemble ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le signe que tu donnes quand quelqu'un te plaît sans t'en rendre compte ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a une version de toi que tu ne me montres pas encore ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu penses de moi mais que tu n'as jamais osé dire ?", i:3, mood:'flirty' },
+    { text: "Si tu pouvais choisir comment cette soirée se termine — ce serait comment ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a quelque chose en moi qui te touche sans que tu saches vraiment pourquoi ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le moment où tu as réalisé que j'étais différent(e) des autres ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a quelque chose que tu attends de moi sans me l'avoir dit ?", i:3, mood:'flirty' },
+    { text: "C'est quoi ta théorie sur ce que je ressens vraiment ce soir ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a un moment ce soir où tu as failli dire quelque chose et tu t'es arrêté(e) ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu ferais si tu savais que je ne te jugerai jamais ?", i:3, mood:'flirty' },
+    { text: "Si tu pouvais me garder dans ta vie d'une seule façon — laquelle tu choisirais ?", i:3, mood:'flirty' },
+    { text: "Est-ce qu'il y a une chose que tu voudrais qu'on fasse ensemble qu'on n'a jamais fait ?", i:2, mood:'flirty' },
+    { text: "C'est quoi la chose que tu m'offrirais si tu pouvais m'offrir n'importe quoi ?", i:2, mood:'flirty' },
+    { text: "Si tu devais me décrire à quelqu'un qui ne me connaît pas — tu dirais quoi ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le moment où tu as su qu'on allait bien s'entendre ?", i:2, mood:'flirty' },
+    { text: "Est-ce que tu penses qu'on aurait pu se rencontrer dans une autre vie ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la chose que tu te demandes parfois sur moi ?", i:2, mood:'flirty' },
+    { text: "Si tu pouvais me rembobiner une conversation qu'on a eue — laquelle tu referais différemment ?", i:2, mood:'flirty' },
+    { text: "C'est quoi la chose chez moi qui te rappelle quelqu'un ou quelque chose ?", i:2, mood:'flirty' },
+    { text: "Est-ce que tu penses qu'on se comprend vraiment ou qu'on fait semblant ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la couleur que tu m'associes et pourquoi ?", i:2, mood:'flirty' },
+  ],
+
+  filtre: [
+    { text: "C'est quoi la chose sur laquelle tu mens le plus souvent à toi-même ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la version de toi que tu montres aux gens vs celle que tu es vraiment ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi la chose que tu fais semblant de ne pas vouloir mais que tu veux vraiment ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la question que tu évites systématiquement quand quelqu'un te la pose ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le masque que tu portes le plus souvent — et pourquoi tu le gardes ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ta façon de fuir quand quelque chose te fait peur émotionnellement ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu fais pour plaire aux autres mais qui te coûte ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le truc que tu critiques chez les autres mais que tu fais toi aussi ?", i:2, mood:'fun' },
+    { text: "Quelle est la chose que tu ne dirais jamais en premier mais que tu penses souvent ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ta façon de saboter quelque chose de bien quand ça commence à trop bien aller ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose dont tu as besoin mais que tu n'arrives jamais à demander ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ta façon de tester les gens sans qu'ils le sachent ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu fais quand tu veux que quelqu'un s'intéresse à toi ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le moment où tu joues un rôle au lieu d'être toi-même ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ta façon de montrer que tu tiens à quelqu'un sans le dire directement ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose que tu acceptes des autres mais que tu ne t'autorises pas toi-même ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi la vérité que tu connais sur toi mais que tu préfères ignorer ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu veux vraiment mais que tu n'oses pas formuler ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ton signe à toi quand tu commences à vraiment faire confiance à quelqu'un ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose qui t'attire chez les gens même si tu sais que c'est pas bon pour toi ?", i:3, mood:'flirty' },
+    { text: "C'est quoi ta façon de te protéger qui finit par t'isoler ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu fais de bien mais que tu minimises toujours ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le mensonge que tu te racontes le plus souvent pour te sentir mieux ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ta façon d'aimer quand tu n'as pas peur ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le comportement chez quelqu'un qui te fait automatiquement baisser la garde ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose dont tu as le plus honte non pas de faire mais de ressentir ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu penses mériter mais que tu n'oses pas réclamer ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le signal chez toi que tu es vraiment à l'aise avec quelqu'un ?", i:2, mood:'flirty' },
+    { text: "C'est quoi ta façon de montrer que tu es blessé(e) sans le dire ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu refuses d'admettre mais que ton comportement dit clairement ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le moment où tu es le plus authentique — sans personne autour ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu fais pour éviter les conversations profondes ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu donnes facilement aux autres mais que tu refuses pour toi ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi ta façon de fuir quelqu'un qui commence à trop compter pour toi ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu n'as jamais dite à voix haute parce que ça la rendrait trop réelle ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le truc que tu remarques toujours en premier chez quelqu'un qui te plaît ?", i:2, mood:'flirty' },
+    { text: "C'est quoi ta façon de savoir que quelqu'un te fait du bien vraiment ?", i:2, mood:'flirty' },
+    { text: "C'est quoi la chose que tu ferais sans hésiter si tu n'avais pas peur du regard des autres ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu ressens souvent mais que tu n'as pas encore de mot pour décrire ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le comportement chez toi que tu aimerais changer mais que tu ne changes pas ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu observes chez les gens mais que tu ne dis jamais ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la version de toi que tu voudrais que les autres voient ce soir ?", i:3, mood:'flirty' },
+    { text: "Quelle est la chose que tu fais par habitude mais qui ne te ressemble plus vraiment ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu aurais voulu qu'on te dise quand tu étais plus jeune ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi ta façon de dire au revoir à quelque chose qui ne te convient plus ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu n'admets jamais en public mais que tu penses en privé ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi la façon dont tu te punis quand tu fais une erreur ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu gardes secrète non par honte mais par besoin de protection ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi ta façon de dire que tu t'ennuies sans le dire ?", i:1, mood:'fun' },
+    { text: "Quelle est la chose que tu te permets seulement quand tu es seul(e) ?", i:2, mood:'sérieux' },
+  ],
+
+  ressenti: [
+    { text: "C'est quoi le sentiment que tu ressens le plus souvent mais que tu n'arrives pas à nommer ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te manque dans ta vie en ce moment — pas un objet, une sensation ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le silence qui te pèse le plus — celui que tu gardes ou celui qu'on garde envers toi ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la dernière fois où tu t'es senti(e) pleinement vivant(e) ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la chose que tu portes depuis longtemps et dont tu ne parles jamais ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le moment de la journée où tu te sens le plus toi-même ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose qui te donne encore de l'espoir même quand tout semble lourd ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi la douleur que tu portes avec le plus de dignité ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi l'émotion que tu refoules le plus souvent ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te remplit — pas qui te distrait, qui te remplit vraiment ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le sentiment que tu associes à ton enfance ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu ressens quand quelqu'un prend vraiment soin de toi ?", i:2, mood:'flirty' },
+    { text: "C'est quoi la texture de ta solitude — froide, douce, pesante ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te donne encore envie de croire en quelque chose ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le sentiment que tu cherches dans les relations sans toujours le trouver ?", i:3, mood:'flirty' },
+    { text: "C'est quoi l'instant précis où tu te sens en sécurité avec quelqu'un ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose qui te fait encore vibrer même quand tu es épuisé(e) ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la différence entre ce que tu montres et ce que tu ressens vraiment en ce moment ?", i:3, mood:'sérieux' },
+    { text: "C'est quoi le sentiment que tu aurais voulu ressentir plus souvent dans ta vie ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te fait te sentir compris(e) sans qu'on ait besoin de parler ?", i:2, mood:'flirty' },
+    { text: "C'est quoi l'état dans lequel tu es quand tu es vraiment bien — pas heureux, bien ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le sentiment que tu gardes pour les moments où tu es seul(e) la nuit ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te fait encore croire que les gens peuvent être bons ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la différence entre quelqu'un que tu aimes et quelqu'un qui te fait du bien ?", i:3, mood:'flirty' },
+    { text: "Quelle est la chose que tu ressens quand tu regardes quelqu'un sans qu'il le sache ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le sentiment qui précède toujours une bonne décision chez toi ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose que tu ressens juste avant de fermer les yeux le soir ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose qui te rappelle que tu mérites d'être aimé(e) ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le sentiment que tu éprouves quand quelqu'un te regarde vraiment ?", i:3, mood:'flirty' },
+    { text: "C'est quoi la sensation physique que tu associes à la joie — pas le mot, la sensation ?", i:1, mood:'fun' },
+    { text: "Quelle est la chose que tu ressens quand quelqu'un garde un secret pour toi ?", i:2, mood:'flirty' },
+    { text: "C'est quoi l'émotion que tu as du mal à recevoir — pas à donner, à recevoir ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te calme quand tout semble trop lourd dans ta tête ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le sentiment que tu associes à cette soirée en ce moment ?", i:2, mood:'flirty' },
+    { text: "Quelle est la chose que tu ressens quand quelqu'un te fait une promesse et la tient ?", i:2, mood:'flirty' },
+    { text: "C'est quoi l'émotion que tu n'as ressentie qu'une seule fois mais que tu n'oublies pas ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose que tu ressens quand tu réalises que quelqu'un pense à toi ?", i:2, mood:'flirty' },
+    { text: "C'est quoi le sentiment qui te dit que tu es à ta place ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi l'émotion que tu aimerais ressentir plus souvent avec quelqu'un ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le sentiment que tu aimerais offrir à quelqu'un ce soir ?", i:3, mood:'flirty' },
+    { text: "Quelle est la chose que tu ressens là, maintenant, que tu n'as pas encore dite ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le sentiment quand tu réalises que tu fais confiance à quelqu'un pour la première fois vraiment ?", i:3, mood:'flirty' },
+    { text: "Quelle est la chose qui te fait ressentir que tu es exactement où tu dois être ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi la différence dans ton corps entre quelqu'un qui t'attire et quelqu'un qui te fait du bien ?", i:3, mood:'flirty' },
+    { text: "Quelle est la chose que tu ressens quand tu réalises que tu comptes pour quelqu'un ?", i:3, mood:'flirty' },
+    { text: "C'est quoi le sentiment que tu as du mal à recevoir sans le minimiser ?", i:3, mood:'sérieux' },
+    { text: "Quelle est la chose qui te manque le plus dans ta façon d'aimer ?", i:3, mood:'flirty' },
+    { text: "C'est quoi l'émotion que tu reconnais le plus facilement chez les autres ?", i:2, mood:'sérieux' },
+    { text: "Quelle est la chose qui te fait ressentir que la vie vaut la peine d'être vécue ?", i:2, mood:'sérieux' },
+    { text: "C'est quoi le ressenti qui te fait savoir qu'une soirée était vraiment bonne ?", i:1, mood:'fun' },
+  ]
+};
+
+// ============================================================
+// ICONS & CONFIG
+// ============================================================
+const CAT_ICONS = { vérité:'💬', action:'🎯', choix:'⚡', complète:'✍️', souvenir:'🎞️', imaginaire:'🌙', face:'👁️', filtre:'🎭', ressenti:'🫀' };
+const CAT_LABELS = { vérité:'Vérité', action:'Action', choix:'Choix', complète:'Complète', souvenir:'Souvenir', imaginaire:'Et si...', face:'Face à face', filtre:'Sans filtre', ressenti:'Ressenti' };
+const MOOD_EMOJIS = ['😊','🙂','😏','🔥','💫'];
+const MOOD_LABELS = ['Chill','Doux','Piquant','Intense','Profond'];
+
+// ============================================================
+// STATE
+// ============================================================
+let players = [];
+let currentPlayerIdx = 0;
+let currentCat = 'vérité';
+let queues = {};
+let playedTotal = 0;
+let totalCards = 0;
+let moodLevel = 0; // 0-4
+
+// ============================================================
+// PLAYER MANAGEMENT
+// ============================================================
+function addPlayer() {
+  const id = Date.now();
+  players.push({ id, name: '', genre: 'autre', score: 0 });
+  renderPlayers();
+}
+
+function removePlayer(id) {
+  players = players.filter(p => p.id !== id);
+  renderPlayers();
+}
+
+function setGenre(id, genre) {
+  const p = players.find(p => p.id === id);
+  if (p) { p.genre = genre; renderPlayers(); }
+}
+
+function renderPlayers() {
+  const list = document.getElementById('playersList');
+  list.innerHTML = players.map((p, idx) => `
+    <div class="player-item" style="animation-delay:${idx*0.05}s">
+      <div class="player-avatar ${p.genre}">${p.genre === 'homme' ? '♂' : p.genre === 'femme' ? '♀' : '✦'}</div>
+      <input class="player-name-input" type="text" placeholder="Prénom..." value="${p.name}"
+        oninput="players[${idx}].name = this.value" maxlength="12">
+      <div class="player-genre-btns">
+        <button class="genre-btn ${p.genre==='homme'?'active-h':''}" onclick="setGenre(${p.id},'homme')">H</button>
+        <button class="genre-btn ${p.genre==='femme'?'active-f':''}" onclick="setGenre(${p.id},'femme')">F</button>
+        <button class="genre-btn ${p.genre==='autre'?'active-a':''}" onclick="setGenre(${p.id},'autre')">·</button>
+      </div>
+      <button class="player-remove" onclick="removePlayer(${p.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function goToPlayers() {
+  showScreen('screen-players');
+  if (players.length === 0) { addPlayer(); addPlayer(); }
+}
+
+function startGame() {
+  // Sync names from inputs
+  document.querySelectorAll('.player-name-input').forEach((inp, i) => {
+    if (players[i]) players[i].name = inp.value.trim() || `Joueur ${i+1}`;
+  });
+
+  if (players.length < 1) { alert('Ajoute au moins 1 joueur !'); return; }
+
+  initQueues();
+  renderPlayersBar();
+  renderCatTabs();
+  currentPlayerIdx = 0;
+  moodLevel = 0;
+  playedTotal = 0;
+  updateMoodBar();
+  showScreen('screen-game');
+  showWelcomeCard();
+}
+
+// ============================================================
+// GAME LOGIC
+// ============================================================
+function initQueues() {
+  totalCards = 0;
+  Object.keys(ALL_DATA).forEach(cat => {
+    queues[cat] = shuffle([...ALL_DATA[cat]]);
+    totalCards += ALL_DATA[cat].length;
+  });
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function getAdaptedQuestion(cat) {
+  const q = queues[cat];
+  if (!q || q.length === 0) return null;
+
+  // Try to find a question matching current mood level
+  const moodMap = [['fun'], ['fun','sérieux'], ['sérieux'], ['sérieux','flirty'], ['flirty','sérieux']];
+  const targetMoods = moodMap[Math.min(moodLevel, 4)];
+
+  // Find matching mood question
+  let idx = q.findIndex(item => targetMoods.includes(item.mood));
+  if (idx === -1) idx = 0; // fallback to first
+
+  const item = q.splice(idx, 1)[0];
+  return item;
+}
+
+function nextCard() {
+  const item = getAdaptedQuestion(currentCat);
+  if (!item) { showEmptyCard(); return; }
+
+  playedTotal++;
+  // Advance mood every ~15 cards
+  moodLevel = Math.min(4, Math.floor(playedTotal / 12));
+  updateMoodBar();
+
+  // Advance player turn
+  const player = players[currentPlayerIdx];
+  players[currentPlayerIdx].score = (players[currentPlayerIdx].score || 0) + 1;
+  currentPlayerIdx = (currentPlayerIdx + 1) % players.length;
+  renderPlayersBar();
+
+  renderCard(item, player);
+  updateProgressInfo();
+}
+
+function skipCard() {
+  const q = queues[currentCat];
+  if (!q || q.length === 0) { nextCard(); return; }
+  // Put current question aside and draw next
+  nextCard();
+}
+
+function renderCard(item, player) {
+  const card = document.getElementById('mainCard');
+  const dots = [1,2,3].map(n => `<div class="intensity-dot ${n<=item.i?'on':''}"></div>`).join('');
+  const playerTag = player ? `
+    <div class="card-player-tag">
+      <div class="card-player-dot" style="background:${playerColor(player.genre)}"></div>
+      ${player.name}
+    </div>` : '';
+
+  card.className = `game-card cat-${currentCat}`;
+  card.innerHTML = `
+    <div class="game-card-glow" id="cardGlow"></div>
+    <span class="card-badge badge-${currentCat}">${CAT_ICONS[currentCat]} ${CAT_LABELS[currentCat]}</span>
+    ${playerTag}
+    <span class="card-emoji-big">${CAT_ICONS[currentCat]}</span>
+    <p class="card-question">${item.text}</p>
+    <div class="card-intensity-row">${dots}</div>
+    <div class="card-mood-tag">${MOOD_LABELS[moodLevel]}</div>
+  `;
+
+  void card.offsetWidth;
+  card.classList.add('card-flip-anim');
+  card.addEventListener('animationend', () => card.classList.remove('card-flip-anim'), {once:true});
+}
+
+function playerColor(genre) {
+  if (genre === 'homme') return '#7ca8e8';
+  if (genre === 'femme') return '#e87ca8';
+  return '#a87ce8';
+}
+
+function showWelcomeCard() {
+  const card = document.getElementById('mainCard');
+  card.className = 'game-card';
+  card.innerHTML = `
+    <div class="game-card-glow"></div>
+    <span class="card-emoji-big">🌙</span>
+    <p class="card-question" style="font-size:0.95rem;">Appuie sur "Nouvelle carte" pour commencer la soirée</p>
+  `;
+  document.getElementById('progressInfo').textContent = `${Object.values(queues).reduce((a,b)=>a+b.length,0)} cartes disponibles`;
+}
+
+function showEmptyCard() {
+  const card = document.getElementById('mainCard');
+  card.className = 'game-card';
+  card.innerHTML = `<div class="empty-card"><span>🎉</span><p>Toutes les cartes jouées !<br>Quelle soirée.</p></div>`;
+}
+
+function updateProgressInfo() {
+  const remaining = Object.values(queues).reduce((a,b) => a+b.length, 0);
+  document.getElementById('progressInfo').textContent = `${playedTotal} jouées · ${remaining} restantes`;
+}
+
+function updateMoodBar() {
+  const pct = (moodLevel / 4) * 100;
+  document.getElementById('moodFill').style.width = pct + '%';
+  document.getElementById('moodEmoji').textContent = MOOD_EMOJIS[moodLevel];
+}
+
+function renderPlayersBar() {
+  const bar = document.getElementById('playersBar');
+  bar.innerHTML = players.map((p, i) => `
+    <div class="player-chip ${i === currentPlayerIdx ? 'active-turn' : ''}" onclick="currentPlayerIdx=${i};renderPlayersBar()">
+      <div class="player-chip-avatar ${p.genre}">${p.genre==='homme'?'♂':p.genre==='femme'?'♀':'✦'}</div>
+      <span class="player-chip-name">${p.name}</span>
+      <span class="player-chip-score">${p.score||0}</span>
+    </div>
+  `).join('');
+}
+
+function renderCatTabs() {
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = Object.keys(ALL_DATA).map(cat => `
+    <button class="cat-tab ${cat===currentCat?'active':''}" data-cat="${cat}" onclick="setCategory('${cat}')">
+      <span>${CAT_ICONS[cat]}</span>${CAT_LABELS[cat]}
+    </button>
+  `).join('');
+}
+
+function setCategory(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.cat === cat);
+  });
+}
+
+function resetGame() {
+  initQueues();
+  currentPlayerIdx = 0;
+  moodLevel = 0;
+  playedTotal = 0;
+  players.forEach(p => p.score = 0);
+  renderPlayersBar();
+  updateMoodBar();
+  showWelcomeCard();
+  updateProgressInfo();
+}
+
+// ============================================================
+// SCREEN NAVIGATION
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function goBack(screenId) {
+  showScreen(screenId);
+  if (audioOn) stopAmbiance();
+}
+
+// ============================================================
+// MUSIC PANEL
+// ============================================================
+let musicPanelOpen = false;
+let currentMusicTab = 'ambiance';
+
+function toggleMusicPanel() {
+  musicPanelOpen = !musicPanelOpen;
+  document.getElementById('music-panel').classList.toggle('open', musicPanelOpen);
+  document.getElementById('musicOverlay').classList.toggle('open', musicPanelOpen);
+  document.getElementById('audioIconBtn').classList.toggle('active', musicPanelOpen);
+}
+
+function switchMusicTab(tab, btn) {
+  currentMusicTab = tab;
+  document.querySelectorAll('.music-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-ambiance').style.display = tab === 'ambiance' ? 'block' : 'none';
+  document.getElementById('tab-playlist').style.display = tab === 'playlist' ? 'block' : 'none';
+}
+
+function openPlaylist() {
+  const url = document.getElementById('playlistUrl').value.trim();
+  if (url) { window.open(url, '_blank'); }
+  else { alert('Colle un lien d\'abord !'); }
+}
+
+// ============================================================
+// AUDIO ENGINE
+// ============================================================
+let audioCtx = null;
+let audioOn = false;
+let masterGain = null;
+let melodyInterval = null;
+let padInterval = null;
+const SCALE = [261.63,293.66,329.63,349.23,392.00,440.00,493.88,523.25,587.33,659.25];
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  masterGain.connect(audioCtx.destination);
+}
+
+function createReverb() {
+  const conv = audioCtx.createConvolver();
+  const length = audioCtx.sampleRate * 3;
+  const buf = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < length; i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/length,2.5);
+  }
+  conv.buffer = buf;
+  return conv;
+}
+
+function playNote(freq, duration, volume=0.06) {
+  if (!audioCtx || !audioOn) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const reverb = createReverb();
+  const rg = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(volume, audioCtx.currentTime+0.1);
+  gain.gain.linearRampToValueAtTime(volume*0.5, audioCtx.currentTime+duration*0.5);
+  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime+duration);
+  rg.gain.setValueAtTime(0.5, audioCtx.currentTime);
+  osc.connect(gain); gain.connect(masterGain); gain.connect(reverb); reverb.connect(rg); rg.connect(masterGain);
+  osc.start(); osc.stop(audioCtx.currentTime+duration+0.1);
+}
+
+function playPad(freq, duration) {
+  if (!audioCtx || !audioOn) return;
+  const o1 = audioCtx.createOscillator(), o2 = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  const reverb = createReverb();
+  const rg = audioCtx.createGain();
+  o1.type = 'sine'; o2.type = 'sine';
+  o1.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  o2.frequency.setValueAtTime(freq*1.004, audioCtx.currentTime);
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(700, audioCtx.currentTime);
+  filter.frequency.linearRampToValueAtTime(300, audioCtx.currentTime+duration);
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.035, audioCtx.currentTime+2);
+  gain.gain.linearRampToValueAtTime(0.025, audioCtx.currentTime+duration*0.7);
+  gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime+duration);
+  rg.gain.setValueAtTime(0.7, audioCtx.currentTime);
+  o1.connect(filter); o2.connect(filter); filter.connect(gain);
+  gain.connect(masterGain); gain.connect(reverb); reverb.connect(rg); rg.connect(masterGain);
+  o1.start(); o1.stop(audioCtx.currentTime+duration+0.2);
+  o2.start(); o2.stop(audioCtx.currentTime+duration+0.2);
+}
+
+function scheduleMelody() {
+  const note = SCALE[Math.floor(Math.random()*SCALE.length)];
+  const octave = Math.random() > 0.5 ? 2 : 1;
+  playNote(note*octave, 1.5+Math.random()*2, 0.04+Math.random()*0.03);
+  if (Math.random() > 0.6) setTimeout(() => {
+    if (!audioOn) return;
+    playNote(SCALE[Math.floor(Math.random()*SCALE.length)]*octave, 1.2, 0.025);
+  }, 400+Math.random()*500);
+}
+
+function schedulePad() {
+  const roots = [130.81,146.83,164.81,174.61,196.00];
+  playPad(roots[Math.floor(Math.random()*roots.length)], 8+Math.random()*5);
+}
+
+function startAmbiance() {
+  initAudio();
+  const silent = audioCtx.createBuffer(1,1,22050);
+  const src = audioCtx.createBufferSource();
+  src.buffer = silent; src.connect(audioCtx.destination); src.start(0);
+  audioCtx.resume().then(() => {
+    audioOn = true;
+    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(1, audioCtx.currentTime+1.5);
+    schedulePad();
+    padInterval = setInterval(() => { if (audioOn) schedulePad(); }, 9000);
+    setTimeout(() => { if (audioOn) scheduleMelody(); }, 1200);
+    melodyInterval = setInterval(() => { if (audioOn) scheduleMelody(); }, 2800+Math.random()*1200);
+    document.getElementById('ambianceToggle').classList.add('on');
+  });
+}
+
+function stopAmbiance() {
+  audioOn = false;
+  if (masterGain && audioCtx) masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime+1.5);
+  clearInterval(melodyInterval); clearInterval(padInterval);
+  document.getElementById('ambianceToggle').classList.remove('on');
+}
+
+function toggleAudio() {
+  if (!audioOn) startAmbiance(); else stopAmbiance();
+}
+
+// ============================================================
+// PWA
+// ============================================================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'block';
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBanner').style.display = 'none';
+    });
+  }
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
+// ============================================================
+// INIT
+// ============================================================
+showScreen('screen-home');
+</script>
+</body>
+</html>
